@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calcolatore Esperimenti [Beta]</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;  <!-- Grigio neutro -->
+	background-color: #ffe4e1; <!-- Rosa -->
+    color: #333;
+    font-size: 8px; /* Modifica la dimensione del font */
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.panel-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.panel {
+    flex: 1;
+    border: 1px solid #ccc;
+    background-color: #eee8d5;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.additional-data {
+    margin-bottom: 20px;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.navbar input[type="number"] {
+    width: 60px;
+}
+
+#update-button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#update-button:hover {
+    background-color: #45a049;
+}
+
+input[type="number"] {
+    width: 60px;
+    font-size: 8px; /* Modifica la dimensione del font */
+}
+
+/* Aggiungi bordi alle celle delle tabelle */
+table {
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+</style>
+</head>
+<body>
+<h1 style="color: red; font-family: Arial, sans-serif; background-color: lightblue; border: 2px solid black; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); letter-spacing: 2px; word-spacing: 5px; font-weight: bold; font-style: italic; font-size: 24px; text-align: center; text-decoration: underline; line-height: 1.5;">Esperimento 1</h1>
+<div class="container">
+    <div class="panel-container">
+<div class="panel-container">
+    <div class="panel" id="mainPanel">
+        <div class="set-buttons">
+            <button onclick="showSet('set1')">Set 1</button>
+            <button onclick="showSet('set2')">Set 2</button>
+            <button onclick="showSet('set3')">Set 3</button>
+            <button onclick="showSet('set4')">Set 4</button>
+        </div>
+        <!-- Dati del set visualizzato qui -->
+    </div>
+</div>
+
+        <div class="panel">
+            
+
+            <!-- Dati aggiuntivi -->
+            <div class="additional-data">
+                <div class="chi-square">
+                    <div>
+                        <label for="chi_quadro">Chi quadro:</label>
+                        <input type="number" id="chi_quadro" value="0.0" readonly>
+                    </div>
+                    <div>
+                        <label for="chiq_ridotto">Chi quadro ridotto(d):</label>
+                        <input type="number" id="chiq_ridotto" value="0.0" readonly>
+                    </div>
+                </div>
+                <div class="d-value">
+                    <div>
+                        <label for="d">d:</label>
+                        <input type="number" id="d" value="8" onchange="updateChiQuadro()">
+                    </div>
+                    <div>
+                        <label for="probabilita">Probabilità:</label>
+                        <input type="number" id="probabilita" value="100" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pulsante Aggiorna valori -->
+            <button id="update-button" onclick="updateValues()">Aggiorna valori</button>
+
+            <!-- Tabella di input -->
+            <div class="table-container">
+                <div style="overflow-x:auto;">
+                    <table id="input-table">
+                        <thead>
+                            <tr>
+                                <th>x(s)</th>
+                                <th>σx(s)</th>
+                                <th>y(m)</th>
+                                <th>σy(m)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Table rows will be added dynamically using JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <!-- Navbar -->
+            <div class="navbar">
+                <div>
+                    <label for="N">N:</label>
+                    <input type="number" id="N" value="10">
+                </div>
+                <div>
+                    <label for="sum_x">Σx:</label>
+                    <input type="number" id="sum_x" value="0.0" readonly>
+                </div>
+                <div>
+                    <label for="sum_y">Σy:</label>
+                    <input type="number" id="sum_y" value="0.0" readonly>
+                </div>
+                <div>
+                    <label for="sum_xy">Σx*y:</label>
+                    <input type="number" id="sum_xy" value="0.0" readonly>
+                </div>
+                <div>
+                    <label for="sum_x2">Σx^2:</label>
+                    <input type="number" id="sum_x2" value="0.0" readonly>
+                </div>
+                <div>
+                    <label for="sum_x_squared">(Σx)^2:</label>
+                    <input type="number" id="sum_x_squared" value="0.0" readonly>
+                </div>
+                <div>
+                    <label for="delta_N_sum_x2">Δ(N*Σx^2):</label>
+                    <input type="number" id="delta_N_sum_x2" value="0.0" readonly>
+                </div>
+                <div>
+                    <label for="A">A:(((Σx^2)*Σy)-(Σx*(Σ x*y))/Δ)</label>
+                    <input type="number" id="A" value="0.0" readonly>
+                </div>
+                <div>
+                    <label for="B">B:(((N)*(Σ x*y))-(Σx*Σy)/Δ)</label>
+                    <input type="number" id="B" value="0.0" readonly>
+                </div>
+                <div>
+                    <label for="sum_squared_errors">Σ(y - A - Bx)^2:</label>
+                    <input type="number" id="sum_squared_errors" value="0.0" readonly>
+                </div>
+                <div>
+                    <label for="error_sigma_A">Errore σA[σY(m)*sqrt((Σx^2)/Δ)]:</label>
+                    <input type="number" id="error_sigma_A" value="0.0" readonly>
+                </div>
+                <div>
+                    <label for="error_sigma_B">Errore σB[σY(m)*sqrt(N/Δ)]:</label>
+                    <input type="number" id="error_sigma_B" value="0.0" readonly>
+                </div>
+            </div>
+        </div>
+
+		<div class="panel">
+			<!-- Tabella aggiunta -->
+			<div class="table-container">
+				<table id="additional-table">
+					<thead>
+						<tr>
+							<th>Errore σY(m)[sqrt((1/(N-2))*(y-A-Bx)^2)]</th>
+							<th>yi-f(xi)</th>
+							<th>(yi-f(xi)/σ)^2</th>
+						</tr>
+					</thead>
+					<tbody id="error-table-body">
+						<!-- Table rows for error values will be added dynamically using JavaScript -->
+					</tbody>
+				</table>
+			</div>
+			<!-- Aggiunta del canvas per la regressione lineare -->
+			<div class="canvas-container" style="border: 1px solid #ccc; padding: 10px;">
+				<canvas id="regression-canvas"></canvas>
+			</div>
+		</div>
+
+        <!-- Seconda tabella -->
+        <div class="table-container">
+            <div style="overflow-x:auto;">
+                <table id="second-table">
+                    <!-- Contenuto della seconda tabella sarà aggiunto dinamicamente -->
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h1 style="color: red; font-family: Arial, sans-serif; background-color: lightblue; border: 2px solid black; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); letter-spacing: 2px; word-spacing: 5px; font-weight: bold; font-style: italic; font-size: 24px; text-align: center; text-decoration: underline; line-height: 1.5;">Esperimento 2</h1>
+
+
+<div class="panel" style="font-family: Arial, sans-serif; margin-bottom: 20px;">
+    <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+        <caption style="font-size: 1.2em; text-align: center; background-color: #f2f2f2; padding: 10px;">Primo Set di Dati</caption>
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th style="border: 1px solid #ddd; padding: 8px;">Posizione specchietto</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Distanza (m)</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">d*2</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Periodo (ns)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">11,3</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">22,6</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">7,20E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">11,97</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">23,94</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">7,77E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">12,48</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">24,96</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">8,20E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">12,87</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">25,74</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">8,56E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">13,47</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">26,94</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">9,08E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">14,07</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">28,14</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">9,60E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">14,87</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">29,74</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">1,03E-07</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">15,73</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">31,46</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">1,11E-07</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">16,77</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">33,54</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">1,21E-07</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">17,63</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">35,26</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">1,29E-07</td>
+            </tr>
+        </tbody>
+    </table>
+	    <canvas id="primoCanvas" style="border: 1px solid #ddd; margin-top: 20px;"></canvas>
+
+</div>
+
+<div class="panel" style="font-family: Arial, sans-serif; margin-bottom: 20px;">
+    <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+        <caption style="font-size: 1.2em; text-align: center; background-color: #f2f2f2; padding: 10px;">Secondo Set di Dati</caption>
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th style="border: 1px solid #ddd; padding: 8px;">Posizione specchietto</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Distanza (m)</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">d*2</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Periodo (ns)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">10,68</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">21,36</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">6,72E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">11,4</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">22,8</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">7,32E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">12,06</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">24,12</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">7,92E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">12,87</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">25,74</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">8,56E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">13,57</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">27,14</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">9,20E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">14,27</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">28,54</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">9,80E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">15,02</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">30,04</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">1,05E-07</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">15,62</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">31,24</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">1,10E-07</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">16,26</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">32,52</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">1,16E-07</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos a</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">17,07</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">34,14</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">1,24E-07</td>
+            </tr>
+        </tbody>
+    </table>
+	<canvas id="SecondoCanvas" style="border: 1px solid #ddd; margin-top: 20px;"></canvas>
+</div>
+<div class="panel" style="font-family: Arial, sans-serif; margin-bottom: 20px;">
+    <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+        <caption style="font-size: 1.2em; text-align: center; background-color: #f2f2f2; padding: 10px;">Terzo Set di Dati</caption>
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th style="border: 1px solid #ddd; padding: 8px;">Cambio specchietto</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Distanza (m)</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">d*2</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Periodo (ns)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos b</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">6,77</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">13,54</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">3,96E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos b</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">6,87</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">13,74</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">4,04E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos b</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">7,27</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">14,54</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">4,48E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos b</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">7,46</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">14,92</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">4,68E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos b</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">7,57</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">15,14</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">4,80E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos b</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">8</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">16</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">5,28E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos b</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">8,2</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">16,4</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">5,56E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos b</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">8,46</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">16,92</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">5,92E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos b</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">8,74</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">17,48</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">6,12E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Pos b</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">9,09</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">18,18</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">6,48E-08</td>
+            </tr>
+        </tbody>
+    </table>
+	<canvas id="TerzoCanvas" style="border: 1px solid #ddd; margin-top: 20px;"></canvas>
+</div>
+<div class="panel" style="font-family: Arial, sans-serif; margin-bottom: 20px;">
+    <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+        <caption style="font-size: 1.2em; text-align: center; background-color: #f2f2f2; padding: 10px;">Quarto Set di Dati</caption>
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th style="border: 1px solid #ddd; padding: 8px;">Cambio specchietto per ogni due misure</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Distanza (m)</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">d*2</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Periodo (ns)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">pos 1</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">6,27</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">12,54</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">4,04E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">pos 1</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">6,86</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">13,72</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">4,92E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">pos 2</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">7,64</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">15,28</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">5,20E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">pos 2</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">8,37</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">16,74</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">6,16E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">pos 2</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">8,96</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">17,92</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">6,64E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">pos 3</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">11,17</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">22,34</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">7,80E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">pos 3</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">12,07</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">24,14</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">8,68E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">pos 3</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">12,74</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">25,48</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">9,40E-08</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">pos 4</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">14,52</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">29,04</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">1,02E-07</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">pos 4</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">15,51</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">31,02</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">1,12E-07</td>
+            </tr>
+        </tbody>
+    </table>
+	<canvas id="QuartoCanvas" style="border: 1px solid #ddd; margin-top: 20px;"></canvas>
+</div>
+
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+ // Funzione per convertire il periodo da nanosecondi a secondi
+    function periodoToSecondi(periodoNanosecondi) {
+        return parseFloat(periodoNanosecondi) * 1e-8; // Modificato il fattore di conversione
+    }
+
+    // Dati per l'asse X (Periodo in secondi)
+    var periodoNanosecondi = [
+        "7,20E-08",
+        "7,77E-08",
+        "8,20E-08",
+        "8,56E-08",
+        "9,08E-08",
+        "9,60E-08",
+        "1,03E-07",
+        "1,11E-07",
+        "1,21E-07",
+        "1,29E-07"
+    ];
+
+    var periodoSecondi = periodoNanosecondi.map(periodoToSecondi);
+
+    // Dati per l'asse Y (d*2)
+    var d2 = [
+        22.6,
+        23.94,
+        24.96,
+        25.74,
+        26.94,
+        28.14,
+        29.74,
+        31.46,
+        33.54,
+        35.26
+    ];
+
+    // Recupera il canvas e il contesto
+    var canvas = document.getElementById('primoCanvas');
+    var ctx = canvas.getContext('2d');
+
+    // Imposta le dimensioni del canvas
+    canvas.width = 800;
+    canvas.height = 400;
+
+    // Sfondo del grafico
+    ctx.fillStyle = '#f0f0f0';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Disegna l'asse X
+    ctx.beginPath();
+    ctx.moveTo(50, canvas.height - 50);
+    ctx.lineTo(canvas.width - 50, canvas.height - 50);
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Disegna l'etichetta dell'asse X
+    ctx.font = "bold 12px Arial";
+    ctx.fillStyle = '#333';
+    ctx.fillText("Periodo (s)", canvas.width / 2, canvas.height - 20);
+
+    // Disegna l'asse Y
+    ctx.beginPath();
+    ctx.moveTo(50, canvas.height - 50);
+    ctx.lineTo(50, 50);
+    ctx.stroke();
+
+    // Disegna l'etichetta dell'asse Y
+    ctx.save();
+    ctx.translate(10, canvas.height / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = "center";
+    ctx.fillText("d*2", 0, 0);
+    ctx.restore();
+
+    // Trova il valore massimo di d*2 per definire l'intervallo sull'asse Y
+    var maxY = Math.max(...d2);
+
+    // Disegna i numeri sull'asse X
+    for (var i = 0; i < periodoSecondi.length; i++) {
+        var x = 50 + (i * (canvas.width - 100) / (periodoSecondi.length - 1));
+        ctx.fillText(periodoSecondi[i].toPrecision(2), x, canvas.height - 35);
+    }
+
+    // Disegna i numeri sull'asse Y
+    for (var i = 0; i <= Math.ceil(maxY); i += 5) {
+        var y = canvas.height - 50 - (i * (canvas.height - 100) / Math.ceil(maxY));
+        ctx.fillText(i, 25, y);
+    }
+
+    // Disegna i punti sul grafico
+    ctx.fillStyle = '#007bff'; // Colore dei punti
+    for (var i = 0; i < periodoSecondi.length; i++) {
+        var x = 50 + (i * (canvas.width - 100) / (periodoSecondi.length - 1));
+        var y = canvas.height - 50 - (d2[i] * (canvas.height - 100) / Math.ceil(maxY)); // Utilizza maxY per il calcolo
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+// Dati per l'asse X (Periodo in secondi)
+var periodoNanosecondiSecondo = [
+    "6,72E-08",
+    "7,32E-08",
+    "7,92E-08",
+    "8,56E-08",
+    "9,20E-08",
+    "9,80E-08",
+    "1,05E-07",
+    "1,10E-07",
+    "1,16E-07",
+    "1,24E-07"
+];
+
+var periodoSecondiSecondo = periodoNanosecondiSecondo.map(periodoToSecondi); // Usa la stessa funzione
+
+// Dati per l'asse Y (d*2)
+var d2Secondo = [
+    21.36,
+    22.8,
+    24.12,
+    25.74,
+    27.14,
+    28.54,
+    30.04,
+    31.24,
+    32.52,
+    34.14
+];
+
+
+    // Recupera il canvas e il contesto
+    var canvasSecondo = document.getElementById('SecondoCanvas');
+    var ctxSecondo = canvasSecondo.getContext('2d');
+
+    // Imposta le dimensioni del canvas
+    canvasSecondo.width = 800;
+    canvasSecondo.height = 400;
+
+    // Sfondo del grafico
+    ctxSecondo.fillStyle = '#f0f0f0';
+    ctxSecondo.fillRect(0, 0, canvasSecondo.width, canvasSecondo.height);
+
+    // Disegna l'asse X
+    ctxSecondo.beginPath();
+    ctxSecondo.moveTo(50, canvasSecondo.height - 50);
+    ctxSecondo.lineTo(canvasSecondo.width - 50, canvasSecondo.height - 50);
+    ctxSecondo.strokeStyle = '#333';
+    ctxSecondo.lineWidth = 2;
+    ctxSecondo.stroke();
+
+    // Disegna l'etichetta dell'asse X
+    ctxSecondo.font = "bold 12px Arial";
+    ctxSecondo.fillStyle = '#333';
+    ctxSecondo.fillText("Periodo (s)", canvasSecondo.width / 2, canvasSecondo.height - 20);
+
+    // Disegna l'asse Y
+    ctxSecondo.beginPath();
+    ctxSecondo.moveTo(50, canvasSecondo.height - 50);
+    ctxSecondo.lineTo(50, 50);
+    ctxSecondo.stroke();
+
+    // Disegna l'etichetta dell'asse Y
+    ctxSecondo.save();
+    ctxSecondo.translate(10, canvasSecondo.height / 2);
+    ctxSecondo.rotate(-Math.PI / 2);
+    ctxSecondo.textAlign = "center";
+    ctxSecondo.fillText("d*2", 0, 0);
+    ctxSecondo.restore();
+
+    // Trova il valore massimo di d*2 per definire l'intervallo sull'asse Y
+    var maxYSecondo = Math.max(...d2Secondo);
+
+    // Disegna i numeri sull'asse X
+    for (var i = 0; i < periodoSecondiSecondo.length; i++) {
+        var x = 50 + (i * (canvasSecondo.width - 100) / (periodoSecondiSecondo.length - 1));
+        ctxSecondo.fillText(periodoSecondiSecondo[i].toPrecision(2), x, canvasSecondo.height - 35);
+    }
+
+    // Disegna i numeri sull'asse Y
+    for (var i = 0; i <= Math.ceil(maxYSecondo); i += 5) {
+        var y = canvasSecondo.height - 50 - (i * (canvasSecondo.height - 100) / Math.ceil(maxYSecondo));
+        ctxSecondo.fillText(i, 25, y);
+    }
+
+    // Disegna i punti sul grafico
+    ctxSecondo.fillStyle = '#007bff'; // Colore dei punti
+    for (var i = 0; i < periodoSecondiSecondo.length; i++) {
+        var x = 50 + (i * (canvasSecondo.width - 100) / (periodoSecondiSecondo.length - 1));
+        var y = canvasSecondo.height - 50 - (d2Secondo[i] * (canvasSecondo.height - 100) / Math.ceil(maxYSecondo)); // Utilizza maxY per il calcolo
+        ctxSecondo.beginPath();
+        ctxSecondo.arc(x, y, 4, 0, Math.PI * 2);
+        ctxSecondo.fill();
+    }
+	// Dati per l'asse X (Periodo in secondi)
+var periodoNanosecondiTerzo = [
+    "3,96E-08",
+    "4,04E-08",
+    "4,48E-08",
+    "4,68E-08",
+    "4,80E-08",
+    "5,28E-08",
+    "5,56E-08",
+    "5,92E-08",
+    "6,12E-08",
+    "6,48E-08"
+];
+
+var periodoSecondiTerzo = periodoNanosecondiTerzo.map(periodoToSecondi); // Usa la stessa funzione
+
+// Dati per l'asse Y (d*2)
+var d2Terzo = [
+    13.54,
+    13.74,
+    14.54,
+    14.92,
+    15.14,
+    16,
+    16.4,
+    16.92,
+    17.48,
+    18.18
+];
+
+// Recupera il canvas e il contesto per il terzo grafico
+var canvasTerzo = document.getElementById('TerzoCanvas');
+var ctxTerzo = canvasTerzo.getContext('2d');
+
+// Imposta le dimensioni del canvas per il terzo grafico
+canvasTerzo.width = 800;
+canvasTerzo.height = 400;
+
+// Sfondo del terzo grafico
+ctxTerzo.fillStyle = '#f0f0f0';
+ctxTerzo.fillRect(0, 0, canvasTerzo.width, canvasTerzo.height);
+
+// Disegna l'asse X per il terzo grafico
+ctxTerzo.beginPath();
+ctxTerzo.moveTo(50, canvasTerzo.height - 50);
+ctxTerzo.lineTo(canvasTerzo.width - 50, canvasTerzo.height - 50);
+ctxTerzo.strokeStyle = '#333';
+ctxTerzo.lineWidth = 2;
+ctxTerzo.stroke();
+
+// Disegna l'etichetta dell'asse X per il terzo grafico
+ctxTerzo.font = "bold 12px Arial";
+ctxTerzo.fillStyle = '#333';
+ctxTerzo.fillText("Periodo (s)", canvasTerzo.width / 2, canvasTerzo.height - 20);
+
+// Disegna l'asse Y per il terzo grafico
+ctxTerzo.beginPath();
+ctxTerzo.moveTo(50, canvasTerzo.height - 50);
+ctxTerzo.lineTo(50, 50);
+ctxTerzo.stroke();
+
+// Disegna l'etichetta dell'asse Y per il terzo grafico
+ctxTerzo.save();
+ctxTerzo.translate(10, canvasTerzo.height / 2);
+ctxTerzo.rotate(-Math.PI / 2);
+ctxTerzo.textAlign = "center";
+ctxTerzo.fillText("d*2", 0, 0);
+ctxTerzo.restore();
+
+// Trova il valore massimo di d*2 per definire l'intervallo sull'asse Y per il terzo grafico
+var maxYTerzo = Math.max(...d2Terzo);
+
+// Disegna i numeri sull'asse X per il terzo grafico
+for (var i = 0; i < periodoSecondiTerzo.length; i++) {
+    var x = 50 + (i * (canvasTerzo.width - 100) / (periodoSecondiTerzo.length - 1));
+    ctxTerzo.fillText(periodoSecondiTerzo[i].toPrecision(2), x, canvasTerzo.height - 35);
+}
+
+// Disegna i numeri sull'asse Y per il terzo grafico
+for (var i = 0; i <= Math.ceil(maxYTerzo); i += 5) {
+    var y = canvasTerzo.height - 50 - (i * (canvasTerzo.height - 100) / Math.ceil(maxYTerzo));
+    ctxTerzo.fillText(i, 25, y);
+}
+
+// Disegna i punti sul terzo grafico
+ctxTerzo.fillStyle = '#007bff'; // Colore dei punti
+for (var i = 0; i < periodoSecondiTerzo.length; i++) {
+    var x = 50 + (i * (canvasTerzo.width - 100) / (periodoSecondiTerzo.length - 1));
+    var y = canvasTerzo.height - 50 - (d2Terzo[i] * (canvasTerzo.height - 100) / Math.ceil(maxYTerzo)); // Utilizza maxY per il calcolo
+    ctxTerzo.beginPath();
+    ctxTerzo.arc(x, y, 4, 0, Math.PI * 2);
+    ctxTerzo.fill();
+}
+// Dati per l'asse X (Periodo in secondi)
+var periodoNanosecondiQuarto = [
+    "4,04E-08",
+    "4,92E-08",
+    "5,20E-08",
+    "6,16E-08",
+    "6,64E-08",
+    "7,80E-08",
+    "8,68E-08",
+    "9,40E-08",
+    "1,02E-07",
+    "1,12E-07"
+];
+
+var periodoSecondiQuarto = periodoNanosecondiQuarto.map(periodoToSecondi); // Usa la stessa funzione
+
+// Dati per l'asse Y (d*2)
+var d2Quarto = [
+    12.54,
+    13.72,
+    15.28,
+    16.74,
+    17.92,
+    22.34,
+    24.14,
+    25.48,
+    29.04,
+    31.02
+];
+
+// Recupera il canvas e il contesto per il quarto grafico
+var canvasQuarto = document.getElementById('QuartoCanvas');
+var ctxQuarto = canvasQuarto.getContext('2d');
+
+// Imposta le dimensioni del canvas per il quarto grafico
+canvasQuarto.width = 800;
+canvasQuarto.height = 400;
+
+// Sfondo del quarto grafico
+ctxQuarto.fillStyle = '#f0f0f0';
+ctxQuarto.fillRect(0, 0, canvasQuarto.width, canvasQuarto.height);
+
+// Disegna l'asse X per il quarto grafico
+ctxQuarto.beginPath();
+ctxQuarto.moveTo(50, canvasQuarto.height - 50);
+ctxQuarto.lineTo(canvasQuarto.width - 50, canvasQuarto.height - 50);
+ctxQuarto.strokeStyle = '#333';
+ctxQuarto.lineWidth = 2;
+ctxQuarto.stroke();
+
+// Disegna l'etichetta dell'asse X per il quarto grafico
+ctxQuarto.font = "bold 12px Arial";
+ctxQuarto.fillStyle = '#333';
+ctxQuarto.fillText("Periodo (s)", canvasQuarto.width / 2, canvasQuarto.height - 20);
+
+// Disegna l'asse Y per il quarto grafico
+ctxQuarto.beginPath();
+ctxQuarto.moveTo(50, canvasQuarto.height - 50);
+ctxQuarto.lineTo(50, 50);
+ctxQuarto.stroke();
+
+// Disegna l'etichetta dell'asse Y per il quarto grafico
+ctxQuarto.save();
+ctxQuarto.translate(10, canvasQuarto.height / 2);
+ctxQuarto.rotate(-Math.PI / 2);
+ctxQuarto.textAlign = "center";
+ctxQuarto.fillText("d*2", 0, 0);
+ctxQuarto.restore();
+
+// Trova il valore massimo di d*2 per definire l'intervallo sull'asse Y per il quarto grafico
+var maxYQuarto = Math.max(...d2Quarto);
+
+// Disegna i numeri sull'asse X per il quarto grafico
+for (var i = 0; i < periodoSecondiQuarto.length; i++) {
+    var x = 50 + (i * (canvasQuarto.width - 100) / (periodoSecondiQuarto.length - 1));
+    ctxQuarto.fillText(periodoSecondiQuarto[i].toPrecision(2), x, canvasQuarto.height - 35);
+}
+
+// Disegna i numeri sull'asse Y per il quarto grafico
+for (var i = 0; i <= Math.ceil(maxYQuarto); i += 5) {
+    var y = canvasQuarto.height - 50 - (i * (canvasQuarto.height - 100) / Math.ceil(maxYQuarto));
+    ctxQuarto.fillText(i, 25, y);
+}
+
+// Disegna i punti sul quarto grafico
+ctxQuarto.fillStyle = '#007bff'; // Colore dei punti
+for (var i = 0; i < periodoSecondiQuarto.length; i++) {
+    var x = 50 + (i * (canvasQuarto.width - 100) / (periodoSecondiQuarto.length - 1));
+    var y = canvasQuarto.height - 50 - (d2Quarto[i] * (canvasQuarto.height - 100) / Math.ceil(maxYQuarto)); // Utilizza maxY per il calcolo
+    ctxQuarto.beginPath();
+    ctxQuarto.arc(x, y, 4, 0, Math.PI * 2);
+    ctxQuarto.fill();
+    ctxQuarto.fill();
+	}
+       var data = {
+            set1: [
+                [0.0000000008, 0.0000000001, 0.2, 0.002],
+                [0.0000000014, 0.0000000001, 0.4, 0.002],
+                [0.0000000022, 0.0000000001, 0.6, 0.002],
+                [0.0000000028, 0.0000000001, 0.8, 0.002],
+                [0.0000000036, 0.0000000001, 1.0, 0.002],
+                [0.0000000042, 0.0000000001, 1.2, 0.002],
+                [0.0000000050, 0.0000000001, 1.4, 0.002],
+                [0.0000000056, 0.0000000001, 1.6, 0.002],
+                [0.0000000064, 0.0000000001, 1.8, 0.002],
+                [0.0000000070, 0.0000000001, 2.0, 0.002]
+            ],
+            set2: [
+                [0.0000000004, 0.0000000001, 0.14, 0.002],
+                [0.0000000010, 0.0000000001, 0.3, 0.002],
+                [0.0000000016, 0.0000000001, 0.46, 0.002],
+                [0.0000000022, 0.0000000001, 0.62, 0.002],
+                [0.0000000028, 0.0000000001, 0.84, 0.002],
+                [0.0000000040, 0.0000000001, 1.16, 0.002],
+                [0.0000000050, 0.0000000001, 1.46, 0.002],
+                [0.0000000058, 0.0000000001, 1.7, 0.002],
+                [0.0000000080, 0.0000000001, 2.3, 0.002],
+                [0.0000000106, 0.0000000001, 3.1, 0.002]
+            ],
+            set3: [
+                [0.0000000010, 0.0000000001, 0.3, 0.002],
+                [0.0000000022, 0.0000000001, 0.6, 0.002],
+                [0.0000000032, 0.0000000001, 0.9, 0.002],
+                [0.0000000042, 0.0000000001, 1.2, 0.002],
+                [0.0000000054, 0.0000000001, 1.5, 0.002],
+                [0.0000000064, 0.0000000001, 1.8, 0.002],
+                [0.0000000074, 0.0000000001, 2.1, 0.002],
+                [0.0000000084, 0.0000000001, 2.4, 0.002],
+                [0.0000000092, 0.0000000001, 2.7, 0.002],
+                [0.0000000102, 0.0000000001, 3.0, 0.002]
+            ],
+            set4: [
+                [0.0000000008, 0.0000000001, 0.24, 0.002],
+                [0.0000000016, 0.0000000001, 0.44, 0.002],
+                [0.0000000028, 0.0000000001, 0.78, 0.002],
+                [0.0000000040, 0.0000000001, 1.1, 0.002],
+                [0.0000000056, 0.0000000001, 1.6, 0.002],
+                [0.0000000066, 0.0000000001, 1.9, 0.002],
+                [0.0000000080, 0.0000000001, 2.3, 0.002],
+                [0.0000000094, 0.0000000001, 2.7, 0.002],
+                [0.0000000110, 0.0000000001, 3.2, 0.002],
+                [0.0000000110, 0.0000000001, 3.4, 0.002]
+            ]
+        };
+
+function showSet(selectedSet) {
+    var panel = document.getElementById('mainPanel');
+    var selectedData = data[selectedSet];
+
+    if (panel && selectedData) {
+        var html = '<div class="set-buttons">';
+        
+        // Genera un pulsante/link per ogni set disponibile
+        for (var key in data) {
+            html += '<button onclick="showSet(\'' + key + '\')">' + key + '</button>';
+        }
+        
+        html += '</div>' +
+                '<table>' +
+                '<tr>' +
+                '<th>x(s)</th>' +
+                '<th>σx(s)</th>' +
+                '<th>y(m)</th>' +
+                '<th>σy(m)</th>' +
+                '</tr>';
+
+        for (var i = 0; i < selectedData.length; i++) {
+            html += '<tr>';
+            html += '<td>' + selectedData[i][0].toFixed(10) + '</td>';
+            html += '<td>' + selectedData[i][1].toFixed(10) + '</td>';
+            html += '<td>' + selectedData[i][2].toFixed(10) + '</td>';
+            html += '<td>' + selectedData[i][3].toFixed(10) + '</td>';
+            html += '</tr>';
+        }
+
+        html += '</table>';
+
+        panel.innerHTML = html;
+    }
+}
+
+
+
+
+    let regressionCanvas = document.getElementById("regression-canvas").getContext("2d");
+    let regressionChart;
+
+    function updateRegressionChart() {
+        if (regressionChart) {
+            regressionChart.destroy(); // Distruggi il grafico precedente se esiste
+        }
+
+        regressionChart = new Chart(regressionCanvas, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Dati sperimentali',
+                    data: [], // I dati saranno aggiunti dinamicamente
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)'
+                }, {
+                    label: 'Regressione lineare',
+                    data: [], // I dati saranno aggiunti dinamicamente
+                    type: 'line',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom',
+                        title: {
+                            display: true,
+                            text: 'x (s)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'y (m)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Aggiorna i dati del grafico
+        let numRows = document.getElementById("input-table").rows.length - 1;
+        let xValues = [];
+        let yValues = [];
+
+        for (let i = 0; i < numRows; i++) {
+            let x = parseFloat(document.getElementById(`x_${i}`).value);
+            let y = parseFloat(document.getElementById(`y_${i}`).value);
+            xValues.push(x);
+            yValues.push(y);
+        }
+
+        // Aggiungi i dati al dataset dei dati sperimentali
+        regressionChart.data.datasets[0].data = xValues.map((x, index) => ({ x: x, y: yValues[index] }));
+
+        // Calcola i valori della regressione lineare
+        let A = parseFloat(document.getElementById("A").value);
+        let B = parseFloat(document.getElementById("B").value);
+        let regressionLine = xValues.map(x => ({ x: x, y: A + B * x }));
+
+        // Aggiungi i dati della regressione lineare
+        regressionChart.data.datasets[1].data = regressionLine;
+
+        // Aggiorna il grafico
+        regressionChart.update();
+    }
+
+    // Aggiornamento del grafico alla prima esecuzione
+    updateRegressionChart();
+
+    function updateValues() {
+    let numRows = document.getElementById("input-table").rows.length - 1;
+    let sumX = 0.0;
+    let sumY = 0.0;
+    let sumXY = 0.0;
+    let sumX2 = 0.0;
+    let sumXSquared = 0.0;
+    let deltaNsumX2 = 0.0;
+    let sumSquaredErrors = 0.0;
+
+    for (let i = 0; i < numRows; i++) {
+        let x = parseFloat(document.getElementById(`x_${i}`).value);
+        let y = parseFloat(document.getElementById(`y_${i}`).value);
+        let A = parseFloat(document.getElementById("A").value);
+        let B = parseFloat(document.getElementById("B").value);
+
+        if (!isNaN(x) && !isNaN(y)) {
+            document.getElementById(`xy_${i}`).innerText = (x * y).toFixed(2);
+            document.getElementById(`x2_${i}`).innerText = (x * x).toFixed(2);
+            sumX += x;
+            sumY += y;
+            sumXY += x * y;
+            sumX2 += x * x;
+            sumXSquared += x;
+        }
+
+        let yMinusABxSquared = Math.pow((y - A - B * x), 2);
+        sumSquaredErrors += yMinusABxSquared;
+        let error = Math.sqrt((1 / (numRows - 2)) * yMinusABxSquared);
+        document.getElementById(`error_${i}`).innerText = error.toFixed(2);
+
+        let yiMinusFxi = y - (A + B * x);
+        document.getElementById(`yiMinusFxi_${i}`).innerText = yiMinusFxi.toFixed(2);
+        
+        let sigma = parseFloat(document.getElementById(`sigma_y_${i}`).value);
+        let squaredError = Math.pow(yiMinusFxi / sigma, 2);
+        document.getElementById(`squared_error_${i}`).innerText = squaredError.toFixed(2);
+    }
+
+    deltaNsumX2 = numRows * sumX2;
+
+    let A = ((sumX2 * sumY) - (sumX * sumXY)) / deltaNsumX2;
+    let B = ((numRows * sumXY) - (sumX * sumY)) / deltaNsumX2;
+    let xValues = [];
+    let yValues = [];
+    let yMinusABxSquared = []; // Array to store (y - A - Bx)^2 values
+
+    for (let i = 0; i < numRows; i++) {
+        xValues.push(parseFloat(document.getElementById(`x_${i}`).value));
+        yValues.push(A + B * xValues[i]);
+        yMinusABxSquared.push(Math.pow((parseFloat(document.getElementById(`y_${i}`).value) - A - B * xValues[i]), 2)); // Calculate (y - A - Bx)^2
+    }
+
+    let errorSigmaA = Math.sqrt(sumSquaredErrors * (sumX2 / deltaNsumX2));
+    let errorSigmaB = Math.sqrt(sumSquaredErrors * (numRows / deltaNsumX2));
+    document.getElementById("N").value = numRows;
+    document.getElementById("sum_x").value = sumX.toFixed(2);
+    document.getElementById("sum_y").value = sumY.toFixed(2);
+    document.getElementById("sum_xy").value = sumXY.toFixed(2);
+    document.getElementById("sum_x2").value = sumX2.toFixed(2);
+    document.getElementById("sum_x_squared").value = (sumX * sumX).toFixed(2);
+    document.getElementById("delta_N_sum_x2").value = deltaNsumX2.toFixed(2);
+    document.getElementById("A").value = A.toFixed(2);
+    document.getElementById("B").value = B.toFixed(2);
+    document.getElementById("sum_squared_errors").value = sumSquaredErrors.toFixed(2);
+    document.getElementById("error_sigma_A").value = errorSigmaA.toFixed(2);
+    document.getElementById("error_sigma_B").value = errorSigmaB.toFixed(2);
+    
+    // Aggiorna Y = A + BX (s) colonna
+    for (let i = 0; i < numRows; i++) {
+        document.getElementById(`Y_${i}`).innerText = yValues[i].toFixed(2);
+    }
+
+    // Aggiorna (y - A - Bx)^2 colonna
+    for (let i = 0; i < numRows; i++) {
+        document.getElementById(`yMinusABxSquared_${i}`).innerText = yMinusABxSquared[i].toFixed(2);
+    }
+
+    // Aggiorna i dati del grafico di regressione lineare
+    updateRegressionChart();
+
+    // Aggiorna Chi-quadro e Chi-quadro ridotto
+    let chiQuadro = sumSquaredErrors;
+    let d = parseFloat(document.getElementById("d").value);
+    let chiQuadroRidotto = chiQuadro / d;
+    document.getElementById("chi_quadro").value = chiQuadro.toFixed(2);
+    document.getElementById("chiq_ridotto").value = chiQuadroRidotto.toFixed(2);
+}
+
+    function updateChiQuadro() {
+        updateValues();
+    }
+
+    window.onload = function() {
+        let numRows = 10;
+
+        let tableBody = document.querySelector("#input-table tbody");
+        for (let i = 0; i < numRows; i++) {
+            let row = document.createElement("tr");
+            row.innerHTML = `
+                <td><input type="number" id="x_${i}" value="0"></td>
+                <td><input type="number" id="sigma_x_${i}" value="1E-10"></td>
+                <td><input type="number" id="y_${i}" value="0"></td>
+                <td><input type="number" id="sigma_y_${i}" value="0.02"></td>
+            `;
+            tableBody.appendChild(row);
+        }
+
+        let navbar = document.querySelector(".navbar");
+        let xyTable = document.createElement("table");
+        xyTable.innerHTML = `
+            <thead>
+                <tr>
+                    <th>x*y</th>
+                    <th>x^2</th>
+                    <th>Y = A + BX (s)</th>
+                    <th>(y - A - Bx)^2</th>
+                </tr>
+            </thead>
+            <tbody id="xy-table-body">
+                <!-- Table rows for x*y will be added dynamically using JavaScript -->
+            </tbody>
+        `;
+        navbar.appendChild(xyTable);
+
+        let xyTableBody = document.getElementById("xy-table-body");
+        for (let i = 0; i < numRows; i++) {
+            let row = document.createElement("tr");
+            row.innerHTML = `
+                <td id="xy_${i}">0.00</td>
+                <td id="x2_${i}">0.00</td>
+                <td id="Y_${i}">0.00</td>
+                <td id="yMinusABxSquared_${i}">0.00</td>
+            `;
+            xyTableBody.appendChild(row);
+        }
+
+        // Aggiunta della nuova tabella e del div vuoto
+        let additionalTableBody = document.getElementById("error-table-body");
+        for (let i = 0; i < numRows; i++) {
+            let row = document.createElement("tr");
+            row.innerHTML = `
+                <td id="error_${i}">0.00</td>
+                <td id="yiMinusFxi_${i}">0.00</td>
+                <td id="squared_error_${i}">0.00</td>
+            `;
+            additionalTableBody.appendChild(row);
+        }
+    };
+</script>
+
+
+</body>
+</html>"
