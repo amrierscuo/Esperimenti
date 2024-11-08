@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WheatStone - Potenza dissipata dai resistori</title>
+    <style>
+        .container {
+            text-align: center;
+            margin: 20px auto;
+            max-width: 600px;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .image {
+            width: 100%;
+            max-width: 600px;
+        }
+        .input-bar {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: space-around;
+            border-radius: 8px;
+        }
+        input[type="number"] {
+            width: 60px;
+        }
+        .results, .result {
+            margin-top: 20px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Esercizio 1: Wheatstone - Potenza dissipata -->
+    <div class="container">
+        <h1>WheatStone - Potenza dissipata dai resistori</h1>
+        <img src="1.jpg" alt="Circuito Wheatstone" class="image">
+        
+        <div class="input-bar">
+            <label>E: <input type="number" id="E" oninput="calculateWheatstone()" placeholder="11"></label>
+            <label>r<sub>i</sub>: <input type="number" id="ri" oninput="calculateWheatstone()" placeholder="4.9"></label>
+            <label>R: <input type="number" id="R" oninput="calculateWheatstone()" placeholder="7.6"></label>
+        </div>
+        
+        <div class="results">
+            <p>Resistenza equivalente (R<sub>eq</sub>): <span id="Req">0.00</span> Ω</p>
+            <p>Corrente (I): <span id="I">0.00</span> A</p>
+            <p>Potenza dissipata (P): <span id="P">0.00</span> W</p>
+        </div>
+    </div>
+
+    <!-- Esercizio 2: Coassiali Potenza Trasmetta -->
+    <div class="container">
+        <h2>COASSIALI POTENZA TRASMESSA</h2>
+        <img src="2.jpg" alt="Esercizio Coassiali Potenza Trasmetta" class="image">
+        
+        <div class="input-bar">
+            <label>Z₀: <input type="number" id="Z_0" oninput="calculateCoaxial()" placeholder="46"></label>
+            <label>Z₁: <input type="number" id="Z_1" oninput="calculateCoaxial()" placeholder="83"></label>
+            <label>Pᵢ: <input type="number" id="P_i" oninput="calculateCoaxial()" placeholder="27"></label>
+        </div>
+        
+        <div class="result">
+            <p>Potenza trasmessa: <span id="P_coaxial">0.00</span> mW</p>
+        </div>
+    </div>
+
+    <!-- Esercizio 3: Frequenza di Oscillazione -->
+    <div class="container">
+        <h2>FREQUENZA OSCILLAZIONI</h2>
+        <img src="3.jpg" alt="Circuito oscillante" class="image">
+        
+        <div class="input-bar">
+            <label>ε: <input type="number" id="epsilon" oninput="calculateFrequency()" placeholder="9"></label>
+            <label>R<sub>1</sub>: <input type="number" id="R1" oninput="calculateFrequency()" placeholder="50"></label>
+            <label>R<sub>2</sub>: <input type="number" id="R2" oninput="calculateFrequency()" placeholder="12.6"></label>
+            <label>C (µF): <input type="number" id="C" oninput="calculateFrequency()" placeholder="2.1"></label>
+            <label>V<sub>c(a)</sub>: <input type="number" id="Vca" oninput="calculateFrequency()" placeholder="0.31"></label>
+            <label>V<sub>c(c)</sub>: <input type="number" id="Vcc" oninput="calculateFrequency()" placeholder="0.82"></label>
+        </div>
+        
+        <div class="results">
+            <p>Tempo di carica (t<sub>c</sub>): <span id="tc">0.0000000000</span> s</p>
+            <p>Tempo di scarica (t<sub>s</sub>): <span id="ts">0.0000000000</span> s</p>
+            <p>Periodo totale (T): <span id="T">0.0000000000</span> s</p>
+            <p>Frequenza di oscillazione (ν): <span id="nu">0.00</span> kHz</p>
+        </div>
+    </div>
+<!-- Esercizio 4: Potenza Apparente -->
+<div class="container">
+    <h2>POTENZA APPARENTE</h2>
+    <img src="4.jpg" alt="Esercizio Potenza Apparente" class="image">
+    
+    <div class="input-bar">
+        <label>Fem Eff: <input type="number" id="fem_eff" oninput="calculateApparentPower()" placeholder="120"></label>
+        <label>Freq: <input type="number" id="freq" oninput="calculateApparentPower()" placeholder="60"></label>
+        <label>C: <input type="number" id="C" oninput="calculateApparentPower()" placeholder="3.4"></label>
+        <label>L: <input type="number" id="L" oninput="calculateApparentPower()" placeholder="6.5"></label>
+    </div>
+    
+    <div class="result">
+        <p>Potenza Apparente (P<sub>app</sub>): <span id="P_app">0.00</span> kW</p>
+    </div>
+</div>
+
+<!-- Esercizio 5: Tempo di scaricamento del condensatore -->
+<div class="container">
+    <h2>Tempo di scaricamento del condensatore</h2>
+    <img src="5.jpg" alt="Esercizio Tempo di scaricamento del condensatore" class="image">
+    
+    <div class="input-bar">
+        <label>R1: <input type="number" id="r1" oninput="calculateDischarge()" placeholder="2.7"></label>
+        <label>R2: <input type="number" id="r2" oninput="calculateDischarge()" placeholder="8.1"></label>
+        <label>R3: <input type="number" id="r3" oninput="calculateDischarge()" placeholder="16"></label>
+        <label>R4: <input type="number" id="r4" oninput="calculateDischarge()" placeholder="3.7"></label>
+        <label>C (µF): <input type="number" id="C" oninput="calculateDischarge()" placeholder="0.5"></label>
+    </div>
+    
+    <div class="result">
+        <p>Tempo di scaricamento: <span id="dischargeTime">0.00</span> µs</p>
+    </div>
+</div>
+<!-- Esercizio 6: Frequenza - Conduttanza Massima in Circuito RLC -->
+<div class="container">
+    <h2>Frequenza - Conduttanza Massima in Circuito RLC</h2>
+    <img src="6.jpg" alt="Esercizio Frequenza Conduttanza" class="image">
+    
+    <div class="input-bar">
+        <label>R: <input type="number" id="R_freq" oninput="calculateFrequency2()" placeholder="49"> Ω</label>
+        <label>L: <input type="number" id="L_freq" oninput="calculateFrequency2()" placeholder="8.0"> mH</label>
+        <label>C: <input type="number" id="C_freq" oninput="calculateFrequency2()" placeholder="4.1"> nF</label>
+    </div>
+    
+    <div class="results">
+        <p>Frequenza di risonanza (f): <span id="f_resonance">0.00</span> kHz</p>
+    </div>
+</div>
+
+<script>
+    function calculateFrequency2() {
+        const R = parseFloat(document.getElementById('R_freq').value) || 49;
+        const L = (parseFloat(document.getElementById('L_freq').value) || 8.0) * 0.001; // Conversione da mH a H
+        const C = (parseFloat(document.getElementById('C_freq').value) || 4.1) * 1e-9; // Conversione da nF a F
+        
+        // Calcolo di omega e frequenza
+        const omega = 1 / Math.sqrt(L * C);
+        const frequency = omega / (2 * Math.PI); // Calcolo frequenza in Hz
+        const frequency_kHz = frequency / 1000; // Conversione in kHz
+        
+        document.getElementById('f_resonance').innerText = frequency_kHz.toFixed(2);
+    }
+</script>
+
+
+<script>
+function calculateDischarge() {
+    const r1 = parseFloat(document.getElementById('r1').value) || 2.7;
+    const r2 = parseFloat(document.getElementById('r2').value) || 8.1;
+    const r3 = parseFloat(document.getElementById('r3').value) || 16;
+    const r4 = parseFloat(document.getElementById('r4').value) || 3.7;
+    const C_microfarad = parseFloat(document.getElementById('C').value) || 0.5;  // Capacitance in µF
+
+    // Conversione di C in farad
+    const C = C_microfarad * 1e-6;
+
+    // Calcolo della resistenza equivalente
+    const Req = ((r1 + r3) * (r2 + r4)) / (r1 + r2 + r3 + r4);
+    
+    // Calcolo del tempo di scaricamento
+    const tau = Req * C;
+    const t_seconds = -tau * Math.log(36 / 100);  // Tempo in secondi
+    const t_microseconds = t_seconds * 1e6;   // Conversione in µs
+
+    document.getElementById('dischargeTime').innerText = t_microseconds.toFixed(6);
+}
+</script>
+
+
+<script>
+    function calculateApparentPower() {
+        const femeff = parseFloat(document.getElementById('fem_eff').value) || 0;
+        const freq = parseFloat(document.getElementById('freq').value) || 0;
+        const C = parseFloat(document.getElementById('C').value) * 1e-6 || 0; // Microfarads to Farads
+        const L = parseFloat(document.getElementById('L').value) * 1e-3 || 0; // Millihenry to Henry
+
+        const term1 = 2 * Math.PI * C * freq;
+        const term2 = 1 / (2 * Math.PI * L * freq);
+        const P_app = ((femeff ** 2) * (term1 - term2) * -1) / 1000; // Convert to kW
+        
+        document.getElementById('P_app').innerText = P_app.toFixed(6);
+    }
+</script>
+
+    <!-- JavaScript per il calcolo della frequenza di oscillazione -->
+    <script>
+        function calculateFrequency() {
+            const epsilon = parseFloat(document.getElementById('epsilon').value) || 0;
+            const R1 = parseFloat(document.getElementById('R1').value) || 0;
+            const R2 = parseFloat(document.getElementById('R2').value) || 0;
+            const C = parseFloat(document.getElementById('C').value) * 1e-6 || 0; // Converti µF a F
+            const Vca = parseFloat(document.getElementById('Vca').value) || 0;
+            const Vcc = parseFloat(document.getElementById('Vcc').value) || 0;
+
+            const Req = R1 + R2;
+            const V1 = Vca * epsilon;
+            const V2 = Vcc * epsilon;
+
+            const tc = Req * C * Math.log((1 - V1 / epsilon) / (1 - V2 / epsilon));
+            const ts = R2 * C * Math.log(V2 / V1);
+            const T = tc + ts;
+            const nu = 1 / T;
+
+            document.getElementById('tc').innerText = tc.toFixed(10);
+            document.getElementById('ts').innerText = ts.toFixed(10);
+            document.getElementById('T').innerText = T.toFixed(10);
+            document.getElementById('nu').innerText = (nu / 1000).toFixed(2); // kHz
+        }
+    </script>
+
+
+    <!-- JavaScript per gli esercizi -->
+    <script>
+        // Funzione per il calcolo della potenza dissipata nel circuito Wheatstone
+        function calculateWheatstone() {
+            const E = parseFloat(document.getElementById('E').value) || 0;
+            const ri = parseFloat(document.getElementById('ri').value) || 0;
+            const R = parseFloat(document.getElementById('R').value) || 0;
+
+            const Req = (2 / 3) * R;
+            const I = E / (Req + ri);
+            const P = I * I * Req;
+
+            document.getElementById('Req').innerText = Req.toFixed(2);
+            document.getElementById('I').innerText = I.toFixed(2);
+            document.getElementById('P').innerText = P.toFixed(2);
+        }
+
+        // Funzione per il calcolo della potenza trasmessa nel caso dei cavi coassiali
+        function calculateCoaxial() {
+            const Z0 = parseFloat(document.getElementById('Z_0').value) || 46;
+            const Z1 = parseFloat(document.getElementById('Z_1').value) || 83;
+            const Pi = parseFloat(document.getElementById('P_i').value) || 27;
+            
+            const P = Pi * (1 - Math.pow((Z1 - Z0) / (Z0 + Z1), 2));
+            
+            document.getElementById('P_coaxial').innerText = P.toFixed(6);
+        }
+    </script>
+</body>
+</html>
