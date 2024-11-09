@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAB II 2019 <Remake></title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Animate.css for Animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <style>
+        /* Background color */
+        body {
+            background-color: #FFD700; /* ocra dorato */
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Styling for each container */
+        .container {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px auto;
+            max-width: 700px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        /* Hover effect for containers */
+        .container:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Input bar styling */
+        .input-bar {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        /* Styling input fields */
+        input[type="number"] {
+            width: 100px;
+            padding: 8px;
+            margin: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        /* Image Styling */
+        .image {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Results text styling */
+        .result p, .results p {
+            font-size: 1.2em;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Custom font for titles */
+        h2 {
+            font-size: 1.8em;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Floating decorations */
+        .decoration {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            animation: rotation 10s infinite linear;
+            opacity: 0.9;
+            z-index: -1;
+        }
+
+        .decoration-left {
+            top: 20px;
+            left: 20px;
+        }
+
+        .decoration-right {
+            top: 20px;
+            right: 20px;
+        }
+
+        /* Rotation animation */
+        @keyframes rotation {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Decorations -->
+    <img src="bluer.png" alt="Decorazione Blu" class="decoration decoration-left">
+    <img src="redb.png" alt="Decorazione Rossa" class="decoration decoration-right">
+    <!-- Esercizio 1: Wheatstone - Potenza dissipata -->
+    <div class="container">
+        <h2>WheatStone - Potenza dissipata dai resistori</h2>
+        <img src="1.jpg" alt="Circuito Wheatstone" class="image">
+        
+        <div class="input-bar">
+            <label>E: <input type="number" id="E" oninput="calculateWheatstone()" placeholder="11"></label>
+            <label>r<sub>i</sub>: <input type="number" id="ri" oninput="calculateWheatstone()" placeholder="4.9"></label>
+            <label>R: <input type="number" id="R" oninput="calculateWheatstone()" placeholder="7.6"></label>
+        </div>
+        
+        <div class="results">
+            <p>Resistenza equivalente (R<sub>eq</sub>): <span id="Req">0.00</span> Ω</p>
+            <p>Corrente (I): <span id="I">0.00</span> A</p>
+            <p>Potenza dissipata (P): <span id="P">0.00</span> W</p>
+        </div>
+    </div>
+
+    <!-- Esercizio 2: Coassiali Potenza Trasmetta -->
+    <div class="container">
+        <h2>Potenza trasmessa nel cavo coassiale d'impedenza</h2>
+        <img src="2.jpg" alt="Esercizio Coassiali Potenza Trasmetta" class="image">
+        
+        <div class="input-bar">
+            <label>Z₀: <input type="number" id="Z_0" oninput="calculateCoaxial()" placeholder="46"></label>
+            <label>Z₁: <input type="number" id="Z_1" oninput="calculateCoaxial()" placeholder="83"></label>
+            <label>Pᵢ: <input type="number" id="P_i" oninput="calculateCoaxial()" placeholder="27"></label>
+        </div>
+        
+        <div class="result">
+            <p>Potenza trasmessa: <span id="P_coaxial">0.00</span> mW</p>
+        </div>
+    </div>
+
+    <!-- Esercizio 3: Frequenza di Oscillazione -->
+    <div class="container">
+        <h2>Frequenza delle oscillazioni</h2>
+        <img src="3.jpg" alt="Circuito oscillante" class="image">
+        
+        <div class="input-bar">
+            <label>ε: <input type="number" id="epsilon" oninput="calculateFrequency()" placeholder="9"></label>
+            <label>R<sub>1</sub>: <input type="number" id="R1" oninput="calculateFrequency()" placeholder="50"></label>
+            <label>R<sub>2</sub>: <input type="number" id="R2" oninput="calculateFrequency()" placeholder="12.6"></label>
+            <label>C (µF): <input type="number" id="C_freqOsc" oninput="calculateFrequency()" placeholder="2.1"></label>
+            <label>V<sub>c(a)</sub>: <input type="number" id="Vca" oninput="calculateFrequency()" placeholder="0.31"></label>
+            <label>V<sub>c(c)</sub>: <input type="number" id="Vcc" oninput="calculateFrequency()" placeholder="0.82"></label>
+        </div>
+        
+        <div class="results">
+            <p>Tempo di carica (t<sub>c</sub>): <span id="tc">0.0000000000</span> s</p>
+            <p>Tempo di scarica (t<sub>s</sub>): <span id="ts">0.0000000000</span> s</p>
+            <p>Periodo totale (T): <span id="T">0.0000000000</span> s</p>
+            <p>Frequenza di oscillazione (ν): <span id="nu">0.00</span> kHz</p>
+        </div>
+    </div>
+<!-- Esercizio 4: Potenza Apparente -->
+<div class="container">
+    <h2>Potenza apparente del generatore</h2>
+    <img src="4.jpg" alt="Esercizio Potenza Apparente" class="image">
+    
+    <div class="input-bar">
+        <label>Fem Eff: <input type="number" id="fem_eff" oninput="calculateApparentPower()" placeholder="120"></label>
+        <label>Freq: <input type="number" id="freq" oninput="calculateApparentPower()" placeholder="60"></label>
+		<label>C: <input type="number" id="C_apparentPower" oninput="calculateApparentPower()" placeholder="3.4"></label>
+		<label>L: <input type="number" id="L_apparentPower" oninput="calculateApparentPower()" placeholder="6.5"></label>
+    </div>
+    
+    <div class="result">
+        <p>Potenza Apparente (P<sub>app</sub>): <span id="P_app">0.00</span> kW</p>
+    </div>
+</div>
+
+<!-- Esercizio 5: Tempo di scaricamento del condensatore -->
+<div class="container">
+    <h2>Tempo di scaricamento del condensatore</h2>
+    <img src="5.jpg" alt="Esercizio Tempo di scaricamento del condensatore" class="image">
+    
+    <div class="input-bar">
+        <label>R1: <input type="number" id="r1" oninput="calculateDischarge()" placeholder="2.7"></label>
+        <label>R2: <input type="number" id="r2" oninput="calculateDischarge()" placeholder="8.1"></label>
+        <label>R3: <input type="number" id="r3" oninput="calculateDischarge()" placeholder="16"></label>
+        <label>R4: <input type="number" id="r4" oninput="calculateDischarge()" placeholder="3.7"></label>
+        <label>C (µF): <input type="number" id="C_discharge" oninput="calculateDischarge()" placeholder="0.5"></label>
+        <label>Percentuale di scaricamento (%): <input type="number" id="percentage" oninput="calculateDischarge()" placeholder="64"></label>
+    </div>
+    
+    <div class="result">
+        <p>Tempo di scaricamento: <span id="dischargeTime">0.00</span> µs</p>
+    </div>
+</div>
+<!-- Esercizio 6: Frequenza - Conduttanza Massima in Circuito RLC -->
+<div class="container">
+    <h2>Frequenza - Conduttanza Massima in Circuito RLC</h2>
+    <img src="6.jpg" alt="Esercizio Frequenza Conduttanza" class="image">
+    
+    <div class="input-bar">
+        <label>R: <input type="number" id="R_freq" oninput="calculateFrequency2()" placeholder="49"> Ω</label>
+		<label>C: <input type="number" id="C_rlc" oninput="calculateFrequency2()" placeholder="4.1"> nF</label>
+		<label>L: <input type="number" id="L_rlc" oninput="calculateFrequency2()" placeholder="8.0"> mH</label>
+    </div>
+    
+    <div class="results">
+        <p>Frequenza di risonanza (f): <span id="f_resonance">0.00</span> kHz</p>
+    </div>
+</div>
+<!-- Esercizio 7: Carica che fluisce attraverso l'interruttore -->
+<div class="container">
+    <h2>Carica che fluisce attraverso l'interruttore</h2>
+    <img src="7.jpg" alt="Circuito Carica sull'Interruttore" class="image">
+    
+    <div class="input-bar">
+        <label>ε (V): <input type="number" id="eps" oninput="calculateCharge()" placeholder="35"></label>
+        <label>R₁ (Ω): <input type="number" id="R1_charge" oninput="calculateCharge()" placeholder="36"></label>
+        <label>R₂ (Ω): <input type="number" id="R2_charge" oninput="calculateCharge()" placeholder="16"></label>
+        <label>C₁ (nF): <input type="number" id="C1_charge" oninput="calculateCharge()" placeholder="565"></label>
+        <label>C₂ (nF): <input type="number" id="C2_charge" oninput="calculateCharge()" placeholder="303"></label>
+    </div>
+    
+    <div class="result">
+        <p>Carica che fluisce (q): <span id="charge">0.00</span> μC</p>
+    </div>
+</div>
+<!-- Esercizio 8: Energia Massima immagazzinata nel circuito LC -->
+<div class="container">
+    <h2>Energia Massima Immagazzinata nel Circuito LC</h2>
+    <img src="8.jpg" alt="Esercizio Energia Massima LC" class="image">
+    
+    <div class="input-bar">
+        <label>ε (V): <input type="number" id="E_energy" oninput="calculateMaxEnergy()" placeholder="28"></label>
+        <label>C (µF): <input type="number" id="C_energy" oninput="calculateMaxEnergy()" placeholder="7.7"></label>
+    </div>
+    
+    <div class="result">
+        <p>Energia Massima: <span id="max_energy">0.00</span> mJ</p>
+    </div>
+</div>
+
+<!-- Esercizio 9: Galvanometro e corrente massima misurabile -->
+<div class="container">
+    <h2>Corrente massima misurabile (Galvanometro)</h2>
+    <img src="9.jpg" alt="Circuito Galvanometro" class="image">
+    
+    <div class="input-bar">
+        <label>I<sub>g</sub> (µA): <input type="number" id="ig" oninput="calculateMaxCurrent()" placeholder="48"></label>
+        <label>R<sub>g</sub> (Ω): <input type="number" id="rg" oninput="calculateMaxCurrent()" placeholder="227"></label>
+        <label>R<sub>s</sub> (Ω): <input type="number" id="rs" oninput="calculateMaxCurrent()" placeholder="0.43"></label>
+    </div>
+    
+    <div class="result">
+        <p>Corrente massima misurabile (I): <span id="imax">0.00</span> mA</p>
+    </div>
+</div>
+
+<!-- Esercizio 10: Tensione a Circuito Aperto - RC parallelo -->
+<div class="container">
+    <h2>Tensione a Circuito Aperto - RC parallelo</h2>
+    <img src="10.jpg" alt="Circuito RC parallelo" class="image">
+    
+    <div class="input-bar">
+        <label>E<sub>1</sub> (V): <input type="number" id="E1_oc" oninput="calculateOpenCircuitVoltage()" placeholder="38"></label>
+        <label>E<sub>2</sub> (V): <input type="number" id="E2_oc" oninput="calculateOpenCircuitVoltage()" placeholder="21"></label>
+        <label>R<sub>1</sub> (Ω): <input type="number" id="R1_oc" oninput="calculateOpenCircuitVoltage()" placeholder="68"></label>
+        <label>R<sub>2</sub> (Ω): <input type="number" id="R2_oc" oninput="calculateOpenCircuitVoltage()" placeholder="25"></label>
+    </div>
+    
+    <div class="result">
+        <p>Tensione a circuito aperto tra i terminali (V<sub>open</sub>): <span id="vopen">0.00</span> V</p>
+    </div>
+</div>
+
+<!-- Esercizio 11: Resistenza di Uscita del Dispositivo -->
+<div class="container">
+    <h2>Resistenza di Uscita del Dispositivo</h2>
+    <img src="11.jpg" alt="Circuito Resistenza Uscita" class="image">
+    
+    <div class="input-bar">
+        <label>E<sub>1</sub> (V): <input type="number" id="E1_output" oninput="calculateOutputResistance()" placeholder="35"></label>
+        <label>E<sub>2</sub> (V): <input type="number" id="E2_output" oninput="calculateOutputResistance()" placeholder="23"></label>
+        <label>R<sub>1</sub> (Ω): <input type="number" id="R1_output" oninput="calculateOutputResistance()" placeholder="51"></label>
+        <label>R<sub>2</sub> (Ω): <input type="number" id="R2_output" oninput="calculateOutputResistance()" placeholder="23"></label>
+    </div>
+    
+    <div class="result">
+        <p>Resistenza di uscita (R<sub>eq</sub>): <span id="req_output">0.00</span> Ω</p>
+    </div>
+</div>
+
+ <!-- Esercizio 12: Potenza dissipata - Lampada da palcoscenico -->
+    <div class="container">
+        <h2>Potenza dissipata - Lampada da palcoscenico</h2>
+        <img src="12.jpg" alt="Circuito Lampada" class="image">
+        
+        <div class="input-bar">
+			<label>P<sub>0</sub> (W): <input type="number" id="P0_lamp" oninput="calculateDissipatedPower()" placeholder="1409"></label>
+			<label>V<sub>eff</sub> (V): <input type="number" id="Veff_lamp" oninput="calculateDissipatedPower()" placeholder="230"></label>
+			<label>f (Hz): <input type="number" id="f_lamp" oninput="calculateDissipatedPower()" placeholder="50"></label>
+			<label>L (H): <input type="number" id="L_lamp" oninput="calculateDissipatedPower()" placeholder="0.43"></label>
+        </div>
+        
+        <div class="result">
+            <p>Potenza dissipata (P<sub>dis</sub>): <span id="Pdis">0.00</span> W</p>
+        </div>
+    </div>
+
+<!-- Esercizio 13: Calcolo della corrente massima in un circuito LC -->
+<div class="container">
+    <h2>Calcolo della corrente massima in un circuito LC</h2>
+    <img src="13.jpg" alt="Circuito LC" class="image">
+    
+    <div class="input-bar">
+        <label>L (mH): <input type="number" id="L_13" oninput="calculateMaxCurrentLC()" placeholder="31"></label>
+        <label>C (µF): <input type="number" id="C_13" oninput="calculateMaxCurrentLC()" placeholder="6.8"></label>
+        <label>I (mA): <input type="number" id="I_13" oninput="calculateMaxCurrentLC()" placeholder="7.1"></label>
+        <label>Q (µC): <input type="number" id="Q_13" oninput="calculateMaxCurrentLC()" placeholder="2.7"></label>
+    </div>
+    
+    <div class="result">
+        <p>Corrente massima (I<sub>max</sub>): <span id="Imax_13">0.00</span> mA</p>
+    </div>
+</div>
+
+<!-- Esercizio 14: Impedenza caratteristica del cavo coassiale -->
+<div class="container">
+    <h2>Impedenza caratteristica del cavo coassiale</h2>
+    <img src="14.jpg" alt="Esercizio Impedenza Caratteristica Coassiale" class="image">
+    
+    <div class="input-bar">
+        <label>ε<sub>r</sub>: <input type="number" id="epsilon_r_14" oninput="calculateImpedance()" placeholder="1.54"></label>
+        <label>μ<sub>r</sub>: <input type="number" id="mu_r_14" oninput="calculateImpedance()" placeholder="1"></label>
+        <label>R<sub>1</sub> (mm): <input type="number" id="R1_14" oninput="calculateImpedance()" placeholder="0.41"></label>
+        <label>R<sub>2</sub> (mm): <input type="number" id="R2_14" oninput="calculateImpedance()" placeholder="2.65"></label>
+    </div>
+    
+    <div class="result">
+        <p>Impedenza caratteristica (Z): <span id="Z_14">0.00</span> Ω</p>
+    </div>
+</div>
+
+<!-- Esercizio 15: Potenza Attiva del Generatore in Circuito Risonante -->
+<div class="container">
+    <h2>Potenza Attiva - Generatore AC</h2>
+    <img src="15.jpg" alt="Circuito Generatore AC" class="image">
+    
+    <div class="input-bar">
+        <label>C (µF): <input type="number" id="C_gen" oninput="calculateActivePower()" placeholder="4.9"></label>
+        <label>L (mH): <input type="number" id="L_gen" oninput="calculateActivePower()" placeholder="5.5"></label>
+    </div>
+    
+    <div class="result">
+        <p>Potenza Attiva (P<sub>attiva</sub>): <span id="Pattiva">0.00</span> W</p>
+    </div>
+</div>
+
+<!-- Esercizio 16: Potenza apparente del generatore kVA -->
+<div class="container">
+    <h2>Potenza Apparente del Generatore kVA [new]</h2>
+    <img src="16.jpg" alt="Esercizio Potenza Apparente del Generatore" class="image">
+    
+    <div class="input-bar">
+        <label>Capacità C (µF): <input type="number" id="C_apparent_16" oninput="calculateApparentPower16()" placeholder="8.3"></label>
+        <label>Induttanza L (mH): <input type="number" id="L_apparent_16" oninput="calculateApparentPower16()" placeholder="6.9"></label>
+    </div>
+    
+    <div class="result">
+        <p>Potenza Apparente (P<sub>app</sub>): <span id="P_app_16">0.00000</span> kVA</p>
+    </div>
+</div>
+
+<script>
+function calculateApparentPower16() {
+    const Veff_16 = 120; // Tensione efficace in Volt
+    const f_16 = 60; // Frequenza in Hz
+    const C_16 = parseFloat(document.getElementById('C_apparent_16').value) * 1e-6 || 0; // Conversione da µF a F
+    const L_16 = parseFloat(document.getElementById('L_apparent_16').value) * 1e-3 || 0; // Conversione da mH a H
+
+    // Verifica se C_16 e L_16 sono valori validi
+    if (C_16 === 0 || L_16 === 0) {
+        document.getElementById('P_app_16').innerText = "Inserisci valori validi per C e L";
+        return;
+    }
+
+    // Calcolo della reattanza capacitiva e induttiva
+    const Xc_16 = 1 / (2 * Math.PI * f_16 * C_16);
+    const Xl_16 = 2 * Math.PI * f_16 * L_16;
+
+    // Calcolo dell'impedenza totale combinando Xc_16 e Xl_16 in parallelo
+    let P_app_16 = 0;
+    if (Math.abs(Xc_16 - Xl_16) > 0.01) { // Evita la risonanza perfetta
+        const Z_tot_16 = Math.abs((Xc_16 * Xl_16) / (Xl_16 - Xc_16));
+        const Ieff_16 = Veff_16 / Z_tot_16; // Corrente efficace
+        P_app_16 = Veff_16 * Ieff_16; // Potenza apparente
+    } else {
+        document.getElementById('P_app_16').innerText = "Risonanza!";
+        return;
+    }
+
+    // Visualizza il risultato con maggiore precisione
+    document.getElementById('P_app_16').innerText = (P_app_16 / 1000).toFixed(5); // Conversione in kVA
+}
+</script>
+
+<script>
+function calculateActivePower() {
+    // Valori costanti per Veff e f
+    const Veff = 120; // Volt
+    const f = 60; // Hz
+
+    // Prendi i valori di C e L dai campi input
+    const C = (parseFloat(document.getElementById('C_gen').value) || 0) * 1e-6; // da µF a F
+    const L = (parseFloat(document.getElementById('L_gen').value) || 0) * 1e-3; // da mH a H
+
+    // Calcola la frequenza di risonanza
+    const fr = 1 / (2 * Math.PI * Math.sqrt(L * C));
+
+    // Definisci una tolleranza stretta per la risonanza
+    const tolerance = 0.05; // Maggiore precisione
+
+    // Variabile per potenza attiva
+    let P_active = 0;
+
+    // Se la frequenza è lontana dalla risonanza, calcola la potenza attiva
+    if (Math.abs(f - fr) > tolerance) {
+        // Calcola la reattanza induttiva e capacitiva
+        const XL = 2 * Math.PI * f * L; // Reattanza induttiva
+        const XC = 1 / (2 * Math.PI * f * C); // Reattanza capacitiva
+
+        // Calcola la corrente efficace (Ieff = Veff / |XL - XC|)
+        const Ieff = Veff / Math.abs(XL - XC);
+
+        // Potenza attiva fuori risonanza
+        //P_active = Veff * Ieff; // Cos(0) = 1
+		P_active=0;
+    }
+
+    // Visualizza il risultato senza duplicare "W"
+    document.getElementById('Pattiva').innerText = P_active.toFixed(2);
+}
+</script>
+
+<script>
+function calculateImpedance() {
+    // Prendi i valori dai campi input
+    const epsilon_r = parseFloat(document.getElementById('epsilon_r_14').value) || 1.54;
+    const mu_r = parseFloat(document.getElementById('mu_r_14').value) || 1;
+    const R1 = (parseFloat(document.getElementById('R1_14').value) || 0.41) * 1e-3; // Conversione da mm a metri
+    const R2 = (parseFloat(document.getElementById('R2_14').value) || 2.65) * 1e-3; // Conversione da mm a metri
+
+    // Costanti
+    const epsilon_0 = 8.854e-12; // Permittività del vuoto in F/m
+    const mu_0 = 4 * Math.PI * 1e-7; // Permeabilità del vuoto in H/m
+
+    // Calcolo dell'impedenza caratteristica
+    const Z = Math.sqrt((mu_r * mu_0) / (epsilon_0 * epsilon_r)) * (1 / (2 * Math.PI)) * Math.log(R2 / R1);
+
+    // Visualizza il risultato
+    document.getElementById('Z_14').innerText = Z.toFixed(2);
+}
+</script>
+
+<script>
+function calculateMaxCurrentLC() {
+    // Prendi i valori dai campi input e converti in unità SI
+    const L = parseFloat(document.getElementById('L_13').value) * 1e-3 || 0;  // da mH a H
+    const C = parseFloat(document.getElementById('C_13').value) * 1e-6 || 0;  // da µF a F
+    const I = parseFloat(document.getElementById('I_13').value) * 1e-3 || 0;  // da mA a A
+    const Q = parseFloat(document.getElementById('Q_13').value) * 1e-6 || 0;  // da µC a C
+
+    // Calcolo dell'angolo usando arctan
+    const theta = Math.atan((I * Math.sqrt(C * L)) / Q);
+
+    // Calcolo della corrente massima e conversione in mA
+    const Imax = (I / Math.sin(theta)) * 1e3;
+
+    // Visualizza il risultato
+    document.getElementById('Imax_13').innerText = Imax.toFixed(2);
+}
+</script>
+
+<script>
+function calculateDissipatedPower() {
+	// Prendi i valori dai campi input
+	const P0 = parseFloat(document.getElementById('P0_lamp').value) || 0;
+	const Veff = parseFloat(document.getElementById('Veff_lamp').value) || 0;
+	const f = parseFloat(document.getElementById('f_lamp').value) || 0;
+	const L = parseFloat(document.getElementById('L_lamp').value) || 0;
+
+	// Costanti e calcoli intermedi
+	const omega = 2 * Math.PI * f; // Calcola omega = 2 * π * f
+	const R = (Veff ** 2) / (P0 ); // Calcola R = Veff^2 / (P0 * 2)
+	const V0 = Veff * Math.sqrt(2); // Calcola V0 = Veff * √2
+	const Ieff = Veff / Math.sqrt(R ** 2 + (omega ** 2 * L ** 2)); // Calcola Ieff
+	
+	// Calcolo di phi
+	const phi = -Math.atan(omega * L / R); // Calcola phi = -arctan(omega * L / R)
+	
+	// Calcolo della potenza dissipata
+	const Pdis = Ieff * Veff * Math.cos(phi); 
+
+	// Visualizza il risultato senza duplicare "W"
+	document.getElementById('Pdis').innerText = Pdis.toFixed(2);
+}
+</script>
+
+<script>
+function calculateOutputResistance() {
+    const E1 = parseFloat(document.getElementById('E1_output').value) || 0;
+    const E2 = parseFloat(document.getElementById('E2_output').value) || 0;
+    const R1 = parseFloat(document.getElementById('R1_output').value) || 0;
+    const R2 = parseFloat(document.getElementById('R2_output').value) || 0;
+
+    if (R1 > 0 && R2 > 0) {
+        // Calcolo della resistenza equivalente del circuito considerando i generatori
+        const Req = (R1 * R2) / (R1 + R2);  // La resistenza equivalente in parallelo tra R1 e R2
+
+        // Mostra il risultato con 2 decimali
+        document.getElementById('req_output').innerText = Req.toFixed(2);
+    } else {
+        document.getElementById('req_output').innerText = "Valori non validi";
+    }
+}
+</script>
+
+<script>
+function calculateOpenCircuitVoltage() {
+    // Acquisizione dei valori di input e verifica che siano numeri validi
+    const E1 = parseFloat(document.getElementById('E1_oc').value);
+    const E2 = parseFloat(document.getElementById('E2_oc').value);
+    const R1 = parseFloat(document.getElementById('R1_oc').value);
+    const R2 = parseFloat(document.getElementById('R2_oc').value);
+
+    // Controllo per assicurarsi che tutti i valori siano definiti e numerici
+    if (isNaN(E1) || isNaN(E2) || isNaN(R1) || isNaN(R2) || (R1 + R2) === 0) {
+        document.getElementById('vopen').innerText = "Valori non validi";
+        return;
+    }
+
+    // Calcolo della corrente i
+    const i = (E1 - E2) / (R1 + R2);
+
+    // Calcolo della tensione a circuito aperto tra i terminali
+    const Vopen = E1 - (i * R1);
+
+    // Visualizza il risultato arrotondato a 2 decimali
+    document.getElementById('vopen').innerText = Vopen.toFixed(2) ;
+}
+</script>
+
+<script>
+function calculateMaxCurrent() {
+    // Conversione di I_g da µA a A
+    const ig = (parseFloat(document.getElementById('ig').value) || 0) * 1e-6;
+    const rg = parseFloat(document.getElementById('rg').value) || 0;
+    const rs = parseFloat(document.getElementById('rs').value) || 0;
+
+    // Calcolo di R totale del galvanometro e shunt
+    const R = (rg + rs) / rs;
+    
+    // Calcolo della corrente massima misurabile in mA
+    const imax = ig * R * 1e3; // Convertiamo a mA moltiplicando per 1000
+
+    // Visualizza il risultato
+    document.getElementById('imax').innerText = imax.toFixed(2) ;
+}
+</script>
+
+<script>
+function calculateMaxEnergy() {
+    // Preleva i valori di input
+    const E = parseFloat(document.getElementById('E_energy').value) || 0;
+    const C = parseFloat(document.getElementById('C_energy').value) * 1e-6 || 0; // Conversione da µF a F
+    
+    // Calcola l'energia massima immagazzinata in mJ
+    const maxEnergy = ((E ** 2) * C / 2) * 1000;
+    
+    // Visualizza il risultato
+    document.getElementById('max_energy').innerText = maxEnergy.toFixed(2) ;
+}
+</script>
+
+<script>
+function calculateCharge() {
+    // Preleva i valori di input
+    const eps = parseFloat(document.getElementById('eps').value) || 0;
+    const R1 = parseFloat(document.getElementById('R1_charge').value) || 0;
+    const R2 = parseFloat(document.getElementById('R2_charge').value) || 0;
+    const C1 = parseFloat(document.getElementById('C1_charge').value) * 1e-9 || 0; // Conversione da nF a F
+    const C2 = parseFloat(document.getElementById('C2_charge').value) * 1e-9 || 0; // Conversione da nF a F
+
+    // Calcola q1 e q2, poi la carica totale q
+    const q1 = C1 * (R1 * eps) / (R1 + R2);
+    const q2 = C2 * (R2 * eps) / (R1 + R2);
+    const q = (q2 - q1) * 1e6; // Risultato in μC
+
+    // Visualizza il risultato
+    document.getElementById('charge').innerText = q.toFixed(2) ;
+}
+</script>
+
+<script>
+    function calculateFrequency2() {
+        const R = parseFloat(document.getElementById('R_freq').value) || 49;
+		const C = parseFloat(document.getElementById('C_rlc').value) * 1e-9 || 0;
+		const L = parseFloat(document.getElementById('L_rlc').value) * 1e-3 || 0.008;
+        
+        // Calcolo di omega e frequenza
+        const omega = 1 / Math.sqrt(L * C);
+        const frequency = omega / (2 * Math.PI); // Calcolo frequenza in Hz
+        const frequency_kHz = frequency / 1000; // Conversione in kHz
+        
+        document.getElementById('f_resonance').innerText = frequency_kHz.toFixed(2);
+    }
+</script>
+
+<script>
+function calculateDischarge() {
+    const r1 = parseFloat(document.getElementById('r1').value) || 2.7;
+    const r2 = parseFloat(document.getElementById('r2').value) || 8.1;
+    const r3 = parseFloat(document.getElementById('r3').value) || 16;
+    const r4 = parseFloat(document.getElementById('r4').value) || 3.7;
+    const C_microfarad = parseFloat(document.getElementById('C_discharge').value) || 0.5;
+    const C = C_microfarad * 1e-6; // Conversione da µF a F
+    const dischargePercentage = parseFloat(document.getElementById('percentage').value) || 64;
+
+    // Calcolo della percentuale residua
+    const residualPercentage = 100 - dischargePercentage;
+
+    // Calcolo della resistenza equivalente
+    const Req = ((r1 + r3) * (r2 + r4)) / (r1 + r2 + r3 + r4);
+    
+    // Calcolo del tempo di scaricamento
+    const tau = Req * C;
+    const t_seconds = -tau * Math.log(residualPercentage / 100);  // Tempo in secondi
+    const t_microseconds = t_seconds * 1e6;   // Conversione in µs
+
+    document.getElementById('dischargeTime').innerText = t_microseconds.toFixed(6);
+}
+</script>
+
+<script>
+    function calculateApparentPower() {
+        const femeff = parseFloat(document.getElementById('fem_eff').value) || 0;
+        const freq = parseFloat(document.getElementById('freq').value) || 0;
+		const C = parseFloat(document.getElementById('C_apparentPower').value) * 1e-6 || 0;
+		const L = parseFloat(document.getElementById('L_apparentPower').value) * 1e-3 || 0;
+
+        const term1 = 2 * Math.PI * C * freq;
+        const term2 = 1 / (2 * Math.PI * L * freq);
+        const P_app = ((femeff ** 2) * (term1 - term2) * -1) / 1000; // Convert to kW
+        
+        document.getElementById('P_app').innerText = P_app.toFixed(6);
+    }
+</script>
+
+<script>
+	function calculateFrequency() {
+		const epsilon = parseFloat(document.getElementById('epsilon').value) || 0;
+		const R1 = parseFloat(document.getElementById('R1').value) || 0;
+		const R2 = parseFloat(document.getElementById('R2').value) || 0;
+		const C = parseFloat(document.getElementById('C_freqOsc').value) * 1e-6 || 0;
+		const Vca = parseFloat(document.getElementById('Vca').value) || 0;
+		const Vcc = parseFloat(document.getElementById('Vcc').value) || 0;
+
+		const Req = R1 + R2;
+		const V1 = Vca * epsilon;
+		const V2 = Vcc * epsilon;
+
+		const tc = Req * C * Math.log((1 - V1 / epsilon) / (1 - V2 / epsilon));
+		const ts = R2 * C * Math.log(V2 / V1);
+		const T = tc + ts;
+		const nu = 1 / T;
+
+		document.getElementById('tc').innerText = tc.toFixed(10);
+		document.getElementById('ts').innerText = ts.toFixed(10);
+		document.getElementById('T').innerText = T.toFixed(10);
+		document.getElementById('nu').innerText = (nu / 1000).toFixed(2); // kHz
+	}
+</script>
+
+<script>
+	// Funzione per il calcolo della potenza dissipata nel circuito Wheatstone
+	function calculateWheatstone() {
+		const E = parseFloat(document.getElementById('E').value) || 0;
+		const ri = parseFloat(document.getElementById('ri').value) || 0;
+		const R = parseFloat(document.getElementById('R').value) || 0;
+
+		const Req = (2 / 3) * R;
+		const I = E / (Req + ri);
+		const P = I * I * Req;
+
+		document.getElementById('Req').innerText = Req.toFixed(2);
+		document.getElementById('I').innerText = I.toFixed(2);
+		document.getElementById('P').innerText = P.toFixed(2);
+	}
+
+	// Funzione per il calcolo della potenza trasmessa nel caso dei cavi coassiali
+	function calculateCoaxial() {
+		const Z0 = parseFloat(document.getElementById('Z_0').value) || 46;
+		const Z1 = parseFloat(document.getElementById('Z_1').value) || 83;
+		const Pi = parseFloat(document.getElementById('P_i').value) || 27;
+		
+		const P = Pi * (1 - Math.pow((Z1 - Z0) / (Z0 + Z1), 2));
+		
+		document.getElementById('P_coaxial').innerText = P.toFixed(6);
+	}
+</script>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+   
+</body>
+</html>
